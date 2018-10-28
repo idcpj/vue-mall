@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>$Title$</title>
+    <script src="../node_modules/vue/dist/vue.min.js"></script>
+    <script src="../node_modules/vue-resource/dist/vue-resource.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <span>{{msg}}</span>
+    <button @click="get">get 请求</button>
+</div>
+<script>
+    new Vue({
+        el:"#app",
+        data:function () {
+            return {
+                msg:"hello",
+                getData:"",
+            }
+        },
+        mounted:function () {
+            Vue.http.interceptors.push(function(request) {
+                console.log(request);
+                // modify method
+                request.method = 'POST';
+                // modify headers
+                request.headers.set('X-CSRF-TOKEN', 'TOKEN11111');
+                return function(response) {
+                    // modify response
+                    response.body = '修改返回值'
+                };
+            });
+        },
+        methods:{
+          get:function () {
+              this.$http.get("../package.json").then(function (res) {
+                  console.log(res.data);
+                  this.getData = res.data
+              })
+          }
+        }
+
+    })
+</script>
+</body>
+</html>

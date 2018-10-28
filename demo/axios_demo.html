@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>$Title$</title>
+    <script src="../node_modules/vue/dist/vue.min.js"></script>
+    <script src="../node_modules/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <span>{{msg}}</span>
+    <button @click="get">get 请求</button>
+</div>
+<script>
+    new Vue({
+        el:"#app",
+        data:function () {
+            return {
+                msg:"hello",
+                getData:"",
+            }
+        },
+        mounted:function () {
+            axios.interceptors.request.use(function (config) {
+                // Do something before request is sent
+                console.log(config);
+                return config;
+            }, function (error) {
+                // Do something with request error
+                return Promise.reject(error);
+            });
+
+        },
+        methods:{
+          get () {
+              axios.get("../package.json").then(function (res) {
+                  console.log(res);
+              }).catch(function (err) {
+                  console.log("request error :" + err);
+              })
+          }
+        }
+
+    })
+</script>
+</body>
+</html>
