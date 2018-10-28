@@ -59,7 +59,7 @@
                             </ul>
                         </div>
                         <ul class="cart-item-list">
-                            <li v-for="(item,index) in cartList" :key="item.productId">
+                            <li v-for="(item,index) in cartList" :key="index">
                                 <div class="cart-tab-1">
                                     <div class="cart-item-check">
                                         <a href="javascipt:;" class="checkbox-btn item-check-btn">
@@ -94,7 +94,7 @@
                                 </div>
                                 <div class="cart-tab-5">
                                     <div class="cart-item-opration">
-                                        <a href="javascript:;" class="item-edit-btn" @click="delGoods(key)">
+                                        <a href="javascript:;" class="item-edit-btn" @click="deCartConfirm(item.productId)">
                                             <svg class="icon icon-del">
                                                 <use xlink:href="#icon-del"></use>
                                             </svg>
@@ -129,17 +129,29 @@
                 </div>
             </div>
         </div>
+        <modal :mdShow="modalConfirm" @close="closeModel">
+            <p slot="message">你确认吗</p>
+            <div slot="btnGroup" >
+                <a href="javascript:;" class="btn btn--m" @click="delGoods">确认</a>
+                <a href="javascript:;" class="btn btn--m" @click="modalConfirm = false">关闭</a>
+            </div>
+        </modal>
     </div>
 </template>
 <script>
     import "@/assets/css/checkout.css";
     import NavBread from "@/components/NavBread";
+    import  Modal from "@/components/Model";
+
     import config from "../../config";
     import  axios from "axios";
     export default{
         data(){
             return{
                 cartList:[],
+                modalConfirm:false,
+                modalShowCart:false,
+                productId:"",
             }
         },
         mounted(){
@@ -148,33 +160,43 @@
           });
 
         },
-        methods:{
-          getCartList(){
-              axios.get(config.api.userCartList).then((response)=>{
-                  let data = response.data;
-                  if (data.status===0){//成功
-                      this.cartList=data.result;
-                  }else {
-                      console.log(data);
-                  }
-              }).catch(err=>{
-                  console.log(err);
-              })
-          },
-         delGoods(productId){
-              alert("asdsa");
-              axios.post(config.api.delGoods,{productId:productId}).then(response=>{
-                  let data =response.data;
-                  if(data.status===0){
-                      alert(data.msg);
-                  }else{
-                      alert(data.msg);
-                  }
-              })
-         }
+        methods: {
+            getCartList() {
+                axios.get(config.api.userCartList).then((response) => {
+                    let data = response.data;
+                    if (data.status === 0) {//成功
+                        this.cartList = data.result;
+                    } else {
+                        console.log(data);
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+            delGoods() {
+                let productId = this.productId;
+                console.log(productId);
+                axios.post(config.api.userDelGoods, {productId: productId}).then(response => {
+                    let data = response.data;
+                    if (data.status === 0) {
+                        alert(data.msg);
+                    } else {
+                        alert(data.msg);
+                    }
+                    this.modalConfirm=false;
+                    this.getCartList()
+                })
+            },
+            deCartConfirm(productId) {
+                this.modalConfirm=true;
+                this.productId=productId
+            },
+            closeModel(){
+                this.modalConfirm=false;
+            }
         },
         components:{
-            NavBread
+            NavBread,Modal
         }
     }
 </script>

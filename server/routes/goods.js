@@ -125,8 +125,7 @@ router.get("/addCart", (req, res, next) => {
                         }
 
                         res.json({
-                            status:0,
-                            msg:'',
+                            status:0, msg:'',
                             result:""
                         });
                         res.end();
@@ -138,4 +137,5 @@ router.get("/addCart", (req, res, next) => {
 
     });
 });
+
 module.exports=router;

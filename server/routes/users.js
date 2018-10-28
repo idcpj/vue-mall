@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const userModel = require("../models/user")
+const userModel = require("../models/user");
+const utils = require("../common/utils");
 
 /* GET users listing. */
 router.get('/', (req, res, next)=> {
@@ -18,7 +19,7 @@ router.post("/login",(req,res,next)=>{
         if (err){
             res.json({
                 status:1,
-                msg:err.msg,
+                msg:err.message,
             });
         }else if(!doc){
             res.json({
@@ -91,7 +92,7 @@ router.get("/cartList",(req,res,next)=>{
         if (err){
             res.json({
                 status:1,
-                msg:err.msg
+                msg:err.message
             });
         }else{
             if (doc){
@@ -103,6 +104,37 @@ router.get("/cartList",(req,res,next)=>{
             }
         }
     })
-})
+});
+router.post("/delete",(req,res,next)=>{
+    let productId = req.body.productId;
+    let userId = req.cookies.userId;
+    console.log(productId);
+    console.log(userId);
+    if (!productId){
+        res.json({
+            status:1,
+            msg:"参数为空",
+        });
+    }else{
+        userModel.update({userId: userId},
+            {$pull:
+                {cartList:
+                    {productId: productId}
+                }
+            }, (err, doc) => {
+            if (err){
+                res.json({
+                    status:1,
+                    msg:err.message,
+                })
+            }else{
+                res.json({
+                    status:0,
+                    msg:'删除成功',
+                })
+            }
+        })
+    }
+});
 
 module.exports = router;

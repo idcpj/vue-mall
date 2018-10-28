@@ -11,12 +11,13 @@ module.exports = {
     api:{
         host:host,
         goods:host+"goods",
-        delGoods:host+"goods/delete",
         addCart:host+"goods/addCart",
         userLogin:host+"users/login",
         userLoginOut:host+"users/loginOut",
         userCheckLogin:host+"/users/checkLogin",
         userCartList:host+"users/cartList",
+        userDelGoods:host+"users/delete",
+
     }  ,
   dev: {
 
