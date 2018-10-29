@@ -62,7 +62,7 @@
                             <li v-for="(item,index) in cartList" :key="index">
                                 <div class="cart-tab-1">
                                     <div class="cart-item-check">
-                                        <a href="javascipt:;" class="checkbox-btn item-check-btn">
+                                        <a @click="checkItem(item)" href="javascipt:;" class="checkbox-btn item-check-btn" :class="{'check':item.checked=='1'}">
                                             <svg class="icon icon-ok">
                                                 <use xlink:href="#icon-ok"></use>
                                             </svg>
@@ -82,9 +82,9 @@
                                     <div class="item-quantity">
                                         <div class="select-self select-self-open">
                                             <div class="select-self-area">
-                                                <a class="input-sub">-</a>
+                                                <a class="input-sub" href="javascript:;" @click="editItem('dec',item)">-</a>
                                                 <span class="select-ipt">{{item.productNum}}</span>
-                                                <a class="input-add">+</a>
+                                                <a class="input-add" href="javascript:;" @click="editItem('add',item)">+</a>
                                             </div>
                                         </div>
                                     </div>
@@ -109,8 +109,8 @@
                     <div class="cart-foot-inner">
                         <div class="cart-foot-l">
                             <div class="item-all-check">
-                                <a href="javascipt:;">
-                  <span class="checkbox-btn item-check-btn">
+                                <a href="javascipt:;"  @click="selectAll()" >
+                  <span class="checkbox-btn item-check-btn" :class="{'check':checkedAll}">
                       <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
                   </span>
                                     <span>Select all</span>
@@ -119,10 +119,10 @@
                         </div>
                         <div class="cart-foot-r">
                             <div class="item-total">
-                                Item total: <span class="total-price">500</span>
+                                Item total: <span class="total-price">{{itemTotal}}</span>
                             </div>
                             <div class="btn-wrap">
-                                <a class="btn btn--red">Checkout</a>
+                                <a class="btn btn--red " :clsss="{'btn--dis':total==0}" @click="checkOut"> Checkout</a>
                             </div>
                         </div>
                     </div>
@@ -152,6 +152,8 @@
                 modalConfirm:false,
                 modalShowCart:false,
                 productId:"",
+                checkedAll:false,
+                total:0,
             }
         },
         mounted(){
@@ -193,6 +195,69 @@
             },
             closeModel(){
                 this.modalConfirm=false;
+            },
+            editItem(flag,item){
+                if (flag==="dec"){
+                    if (item.productNum<=1){
+                        return
+                    }
+                    item.productNum--;
+                }else if(flag==="add"){
+                    item.productNum++
+                }
+                let params={
+                    productId:item.productId,
+                    productNum:item.productNum,
+
+                };
+                axios.post(config.api.userEditCartNum,params).then(response=>{
+                    let data = response.data;
+                    if(data.status===1){
+                        alert(data.msg)
+                    }else{
+                        console.log("修改成功");
+                    }
+                })
+            },
+            checkItem(item){
+                let checked=item.checked=="1"?"0":"1";
+                let params={
+                    productId:item.productId,
+                    checked:checked
+
+                };
+                axios.post(config.api.userCheckOut,params).then(response=>{
+                    let data =response.data;
+                    if(data.status==1){
+                        alert(data.msg)
+                    }else {
+                        item.checked=checked;
+                        console.log("success");
+                    }
+                })
+            },
+            selectAll(){
+                this.checkedAll=!this.checkedAll
+                this.cartList.forEach(item=>{
+                    item.checked=this.checkedAll?"1":"0";
+                })
+            },
+            checkOut(){
+                if (this.total>0){
+                    this.$router.push("/address")
+                }
+            }
+        },
+        computed:{
+            itemTotal(){
+                this.total=0;
+                this.cartList.forEach(item=>{
+                    if(item.checked==="1"){
+                        this.total+=item.productNum*item.salePrice
+                    }
+                });
+                return this.total;
+
             }
         },
         components:{

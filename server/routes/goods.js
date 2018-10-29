@@ -71,7 +71,6 @@ router.get("/addCart", (req, res, next) => {
                 status:1,
                 msg:err1.message
             });
-            res.end();
         }
 
         let hasGoods = false;
@@ -97,7 +96,6 @@ router.get("/addCart", (req, res, next) => {
                         result:""
                     });
                 }
-                res.end();
 
             })
         }else{
@@ -108,7 +106,6 @@ router.get("/addCart", (req, res, next) => {
                         status:1,
                         msg:err2.message
                     });
-                    res.end();
                 }
 
                 if (goodsDoc){
@@ -120,15 +117,13 @@ router.get("/addCart", (req, res, next) => {
                             res.json({
                                 status:1,
                                 msg:err3.message
-                            })
-                            res.end();
+                            });
                         }
 
                         res.json({
                             status:0, msg:'',
                             result:""
                         });
-                        res.end();
 
                     })
                 }

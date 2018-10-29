@@ -17,6 +17,8 @@ module.exports = {
         userCheckLogin:host+"/users/checkLogin",
         userCartList:host+"users/cartList",
         userDelGoods:host+"users/delete",
+        userEditCartNum:host+"users/editCartNum",
+        userCheckOut:host+"users/CheckOut",
 
     }  ,
   dev: {

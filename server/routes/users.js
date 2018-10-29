@@ -136,5 +136,49 @@ router.post("/delete",(req,res,next)=>{
         })
     }
 });
+//修改购物车数量
+router.post("/editCartNum",(req,res,next)=>{
+    let productId = req.body.productId;
+    let productNum = req.body.productNum;
+    let userId  =req.cookies.userId;
+    console.log(productId);
+    console.log(productNum);
+    console.log(userId);
+    userModel.update({
+        userId:userId,"cartList.productId":productId},
+        {"cartList.$.productNum":productNum},(err,doc)=>{
+        if (err){
+            res.json({
+                status:1,
+                msg:err.message,
+            })
+        }else{
+            res.json({
+                status:0,
+                msg:'修改成功',
+            })
+        }
+    })
+});
 
+router.post("/CheckOut",(req,res,next)=>{
+   let productId = req.body.productId;
+   let checked = req.body.checked;
+   let userId  =req.cookies.userId;
+
+   userModel.update({userId:userId,"cartList.productId":productId},{"cartList.$.checked":checked},(err,doc)=>{
+       if (err){
+           res.json({
+               status:1,
+               msg:err.message,
+           })
+       }else{
+           res.json({
+               status:0,
+               msg:'修改成功',
+           })
+       }
+   })
+
+});
 module.exports = router;
