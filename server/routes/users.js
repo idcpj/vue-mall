@@ -181,4 +181,96 @@ router.post("/CheckOut",(req,res,next)=>{
    })
 
 });
+
+router.get("/Address",(req,res,next)=>{
+   let userId = req.cookies.userId;
+    console.log(userId);
+    userModel.findOne({userId:userId},(err,doc)=>{
+        if (err){
+            res.json({
+                status:1,
+                msg:err.message,
+            })
+        }else{
+            if (doc){
+                res.json({
+                    status:0,
+                    msg:'修改成功',
+                    result:doc.addressList,
+                })
+            }else{
+                res.json({
+                    status:1,
+                    msg:"没有 doc",
+                })
+            }
+
+        }
+    })
+});
+
+router.post("/delAddress",(req,res,next)=>{
+    let userId = req.cookies.userId;
+    let addressId =req.body.addressId;
+    console.log("userId :" + userId);
+    console.log("addressId :" + addressId);
+    userModel.update({userId:userId,$pull:{addressList:{addressId:addressId}}},(err,doc)=>{
+        if (err){
+            res.json({
+                status:1,
+                msg:err.message,
+            })
+        }else{
+            res.json({
+                status:0,
+                msg:'删除成功',
+            })
+        }
+    });
+});
+
+router.post("/defaultAddress",(req,res,next)=>{
+    let userId = req.cookies.userId;
+    let addressId =req.body.addressId;
+    console.log("userId :" + userId);
+    console.log("addressId :" + addressId);
+    userModel.findOne({userId:userId},(err,doc)=>{
+        if (err) {
+            res.json({
+                status: 1,
+                msg: err.message,
+            })
+        }else{
+            if(!doc){
+                res.json({
+                    status: 1,
+                    msg: "doc 为空",
+                });
+            }else{
+                doc.addressList.forEach(item=>{
+                    if(item.addressId==addressId){
+                        item.isDefault=true;
+                    }else {
+                        item.isDefault=false;
+                    }
+                });
+
+                doc.save((err,doc)=>{
+                    if(err){
+                        res.json({
+                            status: 1,
+                            msg: err.message,
+                        })
+                    }else{
+                        res.json({
+                            status: 0,
+                            msg: "修改成功",
+                            result:doc.addressList
+                        })
+                    }
+                });
+            }
+        }
+    });
+})
 module.exports = router;

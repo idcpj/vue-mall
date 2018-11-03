@@ -19,6 +19,9 @@ module.exports = {
         userDelGoods:host+"users/delete",
         userEditCartNum:host+"users/editCartNum",
         userCheckOut:host+"users/CheckOut",
+        userAddress:host+"users/Address",
+        UserDelAddress:host+"users/delAddress",
+        UserDefaultAdress:host+"users/defaultAddress",
 
     }  ,
   dev: {

@@ -61,12 +61,13 @@ router.get("/",(req,res,err)=>{
 router.get("/addCart", (req, res, next) => {
 
     const productId = req.query.productId;
-    const UserId = "100000077";
+    const UserId = req.cookies.userId;
     const params =  {
         userId:UserId
     }
+    console.log("params : " + params);
     User.findOne(params,(err1,userDoc)=>{
-        if(err1 || !userDoc){
+        if(err1){
             res.json({
                 status:1,
                 msg:err1.message
