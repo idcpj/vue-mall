@@ -59,7 +59,7 @@
                     <div class="addr-list-wrap">
                         <div class="addr-list">
                             <ul>
-                                <li v-for="item in  addressLImit" @click="checkIndex=item.addressId;hasCheck=true;" :class="{'check':checkIndex===item.addressId}">
+                                <li v-for="item in  addressLImit" @click="checkIndex=item.addressId" :class="{'check':checkIndex===item.addressId}">
                                     <dl>
                                         <dt>{{item.userName}}</dt>
                                         <dd class="address">{{item.streetName}}</dd>
@@ -71,7 +71,7 @@
                                         </a>
                                     </div>
                                     <div class="addr-opration addr-set-default">
-                                        <a href="javascript:;" class="addr-set-default-btn" v-show="hasCheck" @click="checkAddess(item)"><i>Set default</i></a>
+                                        <a href="javascript:;" class="addr-set-default-btn" v-show="checkIndex===item.addressId && item.isDefault==false" @click="checkAddess(item)"><i>Set default</i></a>
                                     </div>
                                     <div v-if="item.isDefault" class="addr-opration addr-default">Default address</div>
                                 </li>
@@ -118,7 +118,7 @@
                         </div>
                     </div>
                     <div class="next-btn-wrap">
-                        <router-link  class="btn btn--m btn--red"  to="/orderConfirm" >Next</router-link>
+                        <router-link  class="btn btn--m btn--red"  :to="{path:'orderConfirm',query:{'addressId':checkIndex}}" >Next</router-link>
                     </div>
                 </div>
             </div>
@@ -144,7 +144,6 @@ export default {
             }],
             limitAddress:3,
             checkIndex:0,
-            hasCheck:true,
         }
     },
     mounted() {
@@ -157,7 +156,13 @@ export default {
                 if(data.status==1){
                     alert(data.msg)
                 }else{
-                    this.address=data.result
+                    this.address=data.result;
+                    //把默认地址赋值给 checkIndex属性
+                    this.address.forEach(item=>{
+                        if(item.isDefault==true){
+                            this.checkIndex=item.addressId;
+                        }
+                    })
                 }
             })
         },
@@ -168,7 +173,7 @@ export default {
             let params={
                 addressId:addressId,
             }
-            axios.post(config.api.UserDelAddress,params).then(response=>{
+            axios.post(config.api.userDelAddress,params).then(response=>{
                 let data =response.data;
                 if(data.status==1){
                     alert(data.msg)
@@ -190,13 +195,12 @@ export default {
           let params={
               addressId:item.addressId
           };
-          axios.post(config.api.UserDefaultAdress,params).then(response=>{
+          axios.post(config.api.userDefaultAdrress,params).then(response=>{
               let data =response.data;
               if(data.status==1){
                   alert(data.msg);
               }else{
                   this.address=data.result;
-                  this.hasCheck=false;
               }
           })
 
