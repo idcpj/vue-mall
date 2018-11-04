@@ -274,4 +274,28 @@ router.post("/defaultAddress",(req,res,next)=>{
     });
 });
 
+
+router.get("/getCartCount",(req,res,next)=>{
+    let userId = req.cookies.userId;
+    console.log("userId : " + userId);
+    userModel.findOne({userId:userId},(err,doc)=>{
+        if (err){
+            res.json({
+                status: 1,
+                msg: err.message,
+            })
+        }else{
+            let cartCount = 0;
+            let cartList = doc.cartList;
+            cartList.map(item=>{
+                cartCount +=parseInt(item.productNum)
+            });
+            res.json({
+                status:0,
+                msg:"",
+                result:cartCount,
+            })
+        }
+    })
+})
 module.exports = router;

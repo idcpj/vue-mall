@@ -23,6 +23,7 @@ module.exports = {
         userDelAddress:host+"users/delAddress",
         userDefaultAdrress:host+"users/defaultAddress",
         userCheckCart:host+"users/checkCart",
+        userCartCount:host+"users/getCartCount",
     }  ,
   dev: {
 

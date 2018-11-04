@@ -9,8 +9,8 @@
         </symbol>
         <div class="navbar">
             <div class="navbar-left-container">
-                <a href="/">
-                    <img class="navbar-brand-logo" src="static/logo.png"></a>
+                <router-link to="/">
+                    <img class="navbar-brand-logo" src="static/logo.png"></router-link>
             </div>
             <div class="navbar-right-container" style="display: flex;">
                 <div class="navbar-menu-container">
@@ -20,12 +20,13 @@
                     <a href="javascript:void(0)"  class="navbar-link"  v-if="!nikeName" @click="loginModalFlag=true">Login</a>
                     <a href="javascript:void(0)" class="navbar-link" v-show="nikeName" @click="loginOut">Logout</a>
                     <div class="navbar-cart-container">
-                        <span class="navbar-cart-count"></span>
+                        <span class="navbar-cart-count"v-if="cartCount>0" >{{cartCount}}</span>
                         <router-link  class="navbar-link navbar-cart-link" to="/cart">
                             <svg class="navbar-cart-logo">
                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
                             </svg>
                         </router-link >
+                        <span></span>
                     </div>
                 </div>
             </div>
@@ -76,11 +77,19 @@
           userPwd:"",
           errorTip:false,
           loginModalFlag:false, //弹框
-          nikeName:"",
+//          nikeName:"",
       }
     },
     mounted(){
         this.checkLogin()
+    },
+    computed:{
+        nikeName(){
+            return this.$store.state.nickName;
+        },
+        cartCount(){
+            return this.$store.state.cartCount
+        }
     },
     methods:{
       checkLogin(){
@@ -109,7 +118,11 @@
                this.errorTip=false;
                //todo
                this.loginModalFlag=false;
-               this.nikeName=res.result.user;
+//               this.nikeName=res.result.user;
+               console.log(res.result.user);
+
+               this.getCartCount()
+               this.$store.commit("updateName",res.result.user)
 
            }else {
                console.log(res);
@@ -118,11 +131,22 @@
            }
         });
       },
+        getCartCount(){
+          axios.get(config.api.userCartCount).then(response=>{
+              let data = response.data;
+              if(data.status==1){
+                  alert(data.msg)
+              }else{
+                  this.$store.commit("updateCartCount",data.result)
+              }
+          })
+        },
         loginOut(){
           axios.post(config.api.userLoginOut).then(response=>{
               let res = response.data;
                 if(res.status===0){
-                    this.nikeName="";
+//                    this.nikeName="";
+                    this.$store.commit("updateName","")
                 }
 
           });
