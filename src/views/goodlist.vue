@@ -96,6 +96,7 @@ export default {
     },
     mounted(){
         this.getGoodsList();
+        this.$toast.show("asasd");
     },
     methods:{
         getGoodsList($state){

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>$Title$</title>
+    <style>
+        .toast-container{
+            position: absolute;
+            left:0;
+            right:0;
+            top:0;
+            bottom:0;
+            z-index: 2000;
+            display:flex;
+            justify-content:center;
+            align-items: center;
+        }
+        .toast{
+            width: 180px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            background-color: rgba(24, 24, 24, 0.66);
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<section class="toast-container">
+    <div class="toast">
+        <span>
+            hello toast
+        </span>
+    </div>
+</section>
+</body>
+</html>

@@ -13,6 +13,9 @@
     <button @click="get">get 请求</button>
 </div>
 <script>
+    import Toast from "pul/index";
+
+    Vue.use(Toast)
     new Vue({
         el:"#app",
         data:function () {
@@ -30,6 +33,8 @@
                 // Do something with request error
                 return Promise.reject(error);
             });
+
+            this.$toast.show("assd")
 
         },
         methods:{
