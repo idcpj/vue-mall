@@ -1,9 +1,9 @@
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
     entry: {
         index:"./src/js/index.js", //设置多入口
         cart:'./src/js/cart.js',
@@ -16,9 +16,27 @@ module.exports = {
     module:{
         rules:[
             {
+                test: /\.m?js$/,
+                include: path.join(__dirname,'src'),
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env']
+                    }
+                }
+            },
+            {
                 test:/\.css$/,
-                use:["style-loader",'css-loader']
-            }
+                include: path.join(__dirname,'src'),
+                exclude: /node_modules/,
+                use:["style-loader",'css-loader'],
+            },
+            {
+                test: /\.js$/,
+                include: path.join(__dirname,'src'),
+                exclude: /node_modules/,
+                loader: "babel-loader"}
         ]
     },
     plugins:[
@@ -31,12 +49,29 @@ module.exports = {
             filename:"index.html",
             template:"./src/index.html",
             chunks:['index'], //只加载 指定 js
+            minify:{
+                removeComments:true,
+                collapseWhitespace:true,
+                minimize: true,
+            }
         }),
         new HtmlWebpackPlugin({
             filename:"cart.html",
             template:"./src/cart.html",
             chunks:['cart'],
+            minify:{
+                removeComments:true,
+                collapseWhitespace:true,
+                minimize: true,
+            }
         }),
     ],
-    devtool:"#source-map" //用于调试
+    optimization: {
+        minimizer: [new UglifyJsPlugin({
+
+            cache: true,
+            parallel: true
+        })]
+    },
+    // devtool:"#source-map" //用于调试
 };
