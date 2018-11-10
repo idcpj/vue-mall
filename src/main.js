@@ -6,11 +6,9 @@ import router from './router'
 import lazyLoad from "vue-lazyload";
 import store from "@/store";
 import "@/assets/css/base.css";
-import VueToast from "../demo/pul/index.js";
 
 Vue.config.productionTip = false;
 
-Vue.use(VueToast);
 
 Vue.use(lazyLoad,{
     loading:"../static/loading-svg/loading-bars.svg"

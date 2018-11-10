@@ -34,6 +34,7 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
+        include:resolve('src'),
         options: vueLoaderConfig
       },
       {
